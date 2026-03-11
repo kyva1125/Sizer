@@ -10,7 +10,7 @@ typedef ResponsiveBuilderType = Widget Function(
 /// A widget that gets the device's details like orientation and constraints
 ///
 /// Usage: Wrap MaterialApp with this widget
-class Sizer extends StatelessWidget {
+class Sizer extends StatefulWidget {
   const Sizer({
     Key? key,
     required this.builder,
@@ -39,6 +39,24 @@ class Sizer extends StatelessWidget {
   final double? maxTabletWidth;
 
   @override
+  State<Sizer> createState() => _SizerState();
+}
+
+class _SizerState extends State<Sizer> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeMetrics() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
 
@@ -48,8 +66,8 @@ class Sizer extends StatelessWidget {
           context,
           constraints,
           orientation,
-          maxMobileWidth,
-          maxTabletWidth,
+          widget.maxMobileWidth,
+          widget.maxTabletWidth,
         );
 
         if (size.width == 0 ||
@@ -59,8 +77,14 @@ class Sizer extends StatelessWidget {
           return const SizedBox();
         }
 
-        return builder(context, orientation, Device.screenType);
+        return widget.builder(context, orientation, Device.screenType);
       });
     });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 }
