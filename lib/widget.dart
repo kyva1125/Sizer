@@ -8,7 +8,6 @@ typedef ResponsiveBuilderType = Widget Function(
 );
 
 /// A widget that gets the device's details like orientation and constraints
-///
 /// Usage: Wrap MaterialApp with this widget
 class Sizer extends StatefulWidget {
   const Sizer({
